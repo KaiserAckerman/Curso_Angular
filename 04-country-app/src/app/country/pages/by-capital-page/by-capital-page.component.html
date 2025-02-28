@@ -1,6 +1,13 @@
 
 
-<app-country-search-input placeholder="Buscar por capital"/>
+<app-country-search-input placeholder="Buscar por capital"
+(value)="query.set($event)"
+/>
 
 
-<app-country-list />
+@if ( countryResource.error()) {
+  <H3>{{ countryResource.error() }}</H3>
+}@if ( countryResource.hasValue()) {
+  <app-country-list [countries]="countryResource.value()!"/>
+}
+
