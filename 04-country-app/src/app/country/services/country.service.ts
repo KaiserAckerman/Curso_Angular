@@ -23,11 +23,9 @@ private queryCacheRegion = new Map<Region, Country[]>();
 serachByCapital(query:string): Observable<Country[]>{
   query = query.toLowerCase();
   const url = `${API_URL}/capital/${query}`;
-
   if(this.queryCacheCapital.has(query)){
     return of(this.queryCacheCapital.get(query)!);
   }
-
   return this.http.get<RESTCountry[]>(url)
   .pipe(
     map(resp => CountryMapper.mapRestCountryArrayToCountryArray(resp)),
@@ -43,11 +41,9 @@ serachByCapital(query:string): Observable<Country[]>{
 serachByCountry(query:string): Observable<Country[]>{
   query = query.toLowerCase();
   const url = `${API_URL}/name/${query}`;
-
   if(this.queryCacheCountry.has(query)){
     return of(this.queryCacheCountry.get(query)!);
   }
-
   return this.http.get<RESTCountry[]>(url)
   .pipe(
     map(resp => CountryMapper.mapRestCountryArrayToCountryArray(resp)),
