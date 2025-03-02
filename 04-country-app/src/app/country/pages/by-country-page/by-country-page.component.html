@@ -3,6 +3,8 @@
 
 <app-country-search-input placeholder="Buscar por pais"
 (value)="query.set($event)"
+[dobounceTime]="3000"
+[initialValue]="query()"
 />
 
   <app-country-list
