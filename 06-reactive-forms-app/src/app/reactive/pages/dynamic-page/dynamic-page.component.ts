@@ -1,6 +1,7 @@
 import { JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormUtils } from '../../../utils/form-utils';
 
 @Component({
   selector: 'app-dynamic-page',
@@ -8,7 +9,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   templateUrl: './dynamic-page.component.html',
 })
 export class DynamicPageComponent {
-
+  formUtils = FormUtils;
   private fb = inject(FormBuilder)
 
   myForm:FormGroup = this.fb.group({
@@ -20,4 +21,8 @@ export class DynamicPageComponent {
     Validators.minLength(3)
     ),
   });
+
+  get favoriteGames() {
+    return this.myForm.get('favoriteGames') as FormArray;
+  }
 }
