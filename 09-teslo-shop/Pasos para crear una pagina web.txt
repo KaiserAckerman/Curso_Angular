@@ -1,0 +1,24 @@
+1. Estructuracion de la pagina - Se van a crear todas las carpetas para construir la arquitectura de la aplicacion, como va a estar compuesta, colocar sus aspectos, servicios, componentes, rutas y utilidades.
+2. Se tienen que establecer las rutas, crear el archivo .routes de cada componente o aspecto de la aplicacion, es decir, las rutas para el front, las rutas para el dashboard y al final las rutas para la aplicacion en general.
+3. Crear componentes/definir rutas hijas
+4. Despues de agregar las rutas, en el layout, colocas el html de las rutas con el router-outlet, y colocas un navbar arriba
+5. Importamos las rutas al navbar y las definimos en los ancortag, en el navbar de daisy te viene tanto la parte responsive como la de desktop, tienes que configurar las dos.
+6. Se cambia la fuente, creando una carpeta dentro de public/assets/fonts y ahi pones el archivo de la fuente que quieres poner
+7. Se agregan las cards y se crea el componente
+8. Agregar las animaciones del fadein mediante el archivo styles.css, este permite darle cierto degradado a los elementos que se les ponga esa animacion
+9. Agregar los paths, para evitar escribir cosas como ./././auth, esto lo haces en el tsconfig.ts, dentro de compiler options
+10. Levantar el backend(Se tiene que hacer lo que diga en el readme del backend)
+-Abrir Docker desktop
+-npm install
+-clonar el .envtemplate y renombrarlo a .env
+-docker-compose up -d (esto levantara el backend con docker)
+-npm run start:dev (dentro del backend, es para levantar la aplicacion tambien)
+-localhost:3000/api/seed (esto se pone en postman, con el fin de corroborar de que el back se haya levantado correctamente)
+11.Vamos a hacer la peticion http para el listado de productos con la siguiente peticion: localhost:3000/api/products
+12.Copiamos lo que arroje la respuesta http en postman y despues usamos el JSON as code, le ponemos el nombre ProductResponse y lo pegamos en las interfaces de la carpeta products, se crea antes un archivo dentro de esa carpeta de nombre "product.interface.ts"
+13.Se corrigen los aspectos de las interfaces y sus cualidades pero eso es dependiendo de las necesidades del proyecto
+14.Cortamos la interfaces del auth y lo copiamos en un nuevo directorio que se crea con la siguiente ruta. "src\app\auth\interfaces\user.interface.ts"
+15. Agregar el provide httpclient con el width fetch adentro para que se puedan hacer peticiones a traves de Observables en Angular
+16. Creamos el servicio para recibir los productos, dentro de la carpeta de services, se injecta el httpclient.
+17. Hacemos el primer metodo del servicio para recibir los productos mediante una consulta http.get, recordar hacerlo mediante observables y utilizar el interface ProductsResponse
+18.
