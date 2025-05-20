@@ -21,4 +21,26 @@
 15. Agregar el provide httpclient con el width fetch adentro para que se puedan hacer peticiones a traves de Observables en Angular
 16. Creamos el servicio para recibir los productos, dentro de la carpeta de services, se injecta el httpclient.
 17. Hacemos el primer metodo del servicio para recibir los productos mediante una consulta http.get, recordar hacerlo mediante observables y utilizar el interface ProductsResponse
-18.
+18. Injectamos el servicio en donde se va a mostrar, en este caso en la pagina de Home-Page, ahi quiero mostrar los productos
+19. En el homepage, mediante rxresource establecemos un recurso reactivo, con el metodo que creamos en el servicio para obtener los productos y que estos se actualizen solitos siempre que haya un cambio.
+20. Generar las variables de entorno y parametrizacion
+-ng g environments : esto crea los archivos enviroments y enviroments de desarrollo
+-se configuran las variables de entornos necesarias(esto varia para cada proyecto, pero por lo general podemos empezar con: "baseURL: 'https://localhost:3000/api',")
+-crear una constante para el baseURL con el valor creado en enviroments(OJO, no usar enviroment de desarrollo)
+-sustituirlo en la peticion http del servicio
+-Parametrizamos la consulta con una interfaz dentro del servicio de productos(esto son los parametros hechos por el propio desarrollador del backen)
+-Con la interfaz establecemos los parametros y lo implementamos en el metodo del servicio donde se reciben los productos, lo establecemos como argumento
+-Dentro del metodo establecemos los valores por default que habran en dado caso de que no se establezcan(limit, offset, gender)
+-Despues se establecen los argumentos recibidos en el metodo, dentro de la peticion http, va justo despues de la misma peticion
+-Actualizamos los argumentos enviados en todos los sitios donde se usaba el metodo(home-page y podemos probar con un objeto vacio, esto para que se pongan los valores definidos por default {})
+-Colocamos los argumentos de limit, offset,gender dentro de la peticion en home-page
+21. Mostraremos los productos en el componente de product-card, tambien añadiremos las imagenes de los productos desde el backend
+-importamos todo en el ts de productcard mediante un input.required(Esto hace que este componente afuerzas tenga un producto y asi evitaremos futuros errores)
+-Ahora ya tenemos acceso a los aspectos del producto y toca cambiarlo en el html, cambiamos el titulo y descripcion mediante una señal
+-Cambiamos el ancortag que te envia a ver mas acerca del producto, cambiamos el router link, le ponemos el product().slug para que tenga una url amigable
+-Colocamos todos los productos en el home, mediante un for, utilizando el ProductsResource.Value()?.Products
+-Tambien colocamos dentro de la referencia a nuestro productcard la variable que declaramos al inicio del for
+-Cambiamos la fuente del titulo dentro del product card y utilizamos la fuente que declaramos al inicio(tambien cambia algunos aspectos pero solo de estetica del titulo)
+22. Colocaremos el codigo para mostrar las imagenes de modo que prevengamos posibles errores en caso de que no haya una imagen en el producto a travez de un placeholder
+-Creamos primero un pipe dentro de la carpeta de pipes en products, escribimos apipe y enter
+-Cambiamos algunos nombres para personalizar el pipe

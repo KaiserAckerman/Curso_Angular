@@ -3,7 +3,6 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { ProductsService } from '@products/services/products.service';
 import { ProductCardComponent } from '@store-front/components/product-card/product-card.component';
 
-
 @Component({
   selector: 'app-home-page',
   imports: [ProductCardComponent],
@@ -16,7 +15,9 @@ export class HomePageComponent {
   productsResource = rxResource({
     request: () => ({}),
     loader:({ request }) => {
-      return this.productsService.getProducts();
+      return this.productsService.getProducts({
+
+      });
     }
   })
 
