@@ -1,7 +1,7 @@
 <div class="card bg-base-100 w-96 shadow-sm animate-fade-in-scale">
   <figure>
     <img
-      src="http://localhost:3000/api/files/product/1741416-00-A_0_2000.jpg"
+      [src]="product().images| ProductImage"
       [alt]="product().title"
       />
   </figure>

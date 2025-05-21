@@ -44,3 +44,11 @@
 22. Colocaremos el codigo para mostrar las imagenes de modo que prevengamos posibles errores en caso de que no haya una imagen en el producto a travez de un placeholder
 -Creamos primero un pipe dentro de la carpeta de pipes en products, escribimos apipe y enter
 -Cambiamos algunos nombres para personalizar el pipe
+-Agregamos la imagen para el PlaceHolder dentro de la carpeta public/assets/images
+23. Configuramos el pipe para mostrar el placeholder en los productos
+-Configuramos las variables de entorno(Es decir, traemos el baseURL, con el enviroment normal, el que no es de desarrollo)
+-El pipe se configura de modo que maneja todas las imagenes en strings, cada string representa una imagen
+-Como el backend por producto maneja siempre un arreglo de dos imagenes, es decir dos strings(que contiene la ruta de la imagen)
+-el pipe se configura de modo que siempre mostrara una imagen y en dado caso de que no haya una imagen mostrara el placeholder
+24. Se cambia la imagen del product-card y se pone a travez de una señal el Product().images con el pipe que acabamos de crear
+25. podemos probar el placeholder, colocando un arreglo vacio en lugar del product().images
