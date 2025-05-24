@@ -16,7 +16,9 @@ export class HomePageComponent {
     request: () => ({}),
     loader:({ request }) => {
       return this.productsService.getProducts({
-
+        limit: 16,
+        offset: 0,
+        gender: 'kid'
       });
     }
   })

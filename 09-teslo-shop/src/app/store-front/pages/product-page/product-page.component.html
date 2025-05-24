@@ -1,1 +1,24 @@
-<p>product-page works!</p>,
+@if (ProductResource.isLoading()) {
+ <div class="flex justify-center items-center h-screen">
+  <span class="loading loading-spinner loading-lg"></span>
+ </div>
+}
+
+<!-- Product -->
+ @if (ProductResource.hasValue()) {
+
+  <div class="grid grid-cosl-1 sm:grid-cols-2 gap-3">
+   <!-- Imagen -->
+        <product-carousel [images]="ProductResource.value()!.images"></product-carousel>
+   <!--  -->
+    <div>
+      <h2 class="text-2xl font-bold font-Montserrat">
+        {{ProductResource.value().title}}
+      </h2>
+      <div class="divider"></div>
+      <p>
+        {{ProductResource.value().description}}
+      </p>
+    </div>
+  </div>
+ }

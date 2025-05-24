@@ -52,3 +52,45 @@
 -el pipe se configura de modo que siempre mostrara una imagen y en dado caso de que no haya una imagen mostrara el placeholder
 24. Se cambia la imagen del product-card y se pone a travez de una señal el Product().images con el pipe que acabamos de crear
 25. podemos probar el placeholder, colocando un arreglo vacio en lugar del product().images
+26. Hacemos que puedas acceder a la pagina del producto desde el titulo y la propia imagen(solo copiamos el ancortag que ya hacia eso)
+27. Configuramos el ProductPage de modo que cuando le demos click al producto nos envie a la informacion de ese producto
+-Empezamos modificando el servicio, agregando un nuevo metodo para que nos rebote toda la informacion del producto basado en su idSlug
+-Como el tipo de respuesta que queremos es diferente al del anterior metodo, se tiene que tomar la interfaz directamente de la api
+-El dato sera entonces de tipo Product, y la peticion http sera la siguiente: `${baseURL}/products/${idSlug}`
+-Ahora toca injectar el servicio en nuestro ProductPage
+-Para acceder al valor del idSlug, lo haremos desde la ruta establecida en el servicio y eso lo haremos con el ActivatedRoute
+-Por lo tanto injectaremos esto a nuestro product-page
+-Con el activatedRoute injectado podemos acceder al idSlug y lo guardamos de la siguiente forma antes de acceder al servicio
+-productIdSlug: string = this.ActivatedRoute.snapshot.params['idSlug'];
+-Mediante un rxResource hacemos la peticion al servicio, poniendo el argumento en el request.
+28. Se colocan los nombres del titulo y la descripcion al html de nuestro componente, buscando una bonita apariencia
+-Comprobamos mediante un if, si el productresource(la funcion que hace el llamado http al servicio) esta cargando y le damos una animacion para eso con tailwind
+-Comprobamos mediante un if si el productresource tiene un valor y mostramos tanto el titulo como la descripcion
+-Se busca dar una apariencia bonita y bien distribuida mediante tailwind, puedes usar alguna card en daisyui
+29. Agregar un Carousel a la pagina del producto
+-Agregamos un nuevo componente dentro de la carpeta de componentes en nuestro directorio de Products
+-Para agregar el carousel utilizaremos SwiperAPI, entonces comenzaremos primero con la instalacion
+-npm install swiper
+-Importamos las librerias necesarias del Swiper, proporcionadas directamente en la guia de instalacion
+-Colocamos la referencia del componente nuevo dentro de nuestro html de la pagina del producto, donde deberia ir el carousel
+-Colocamos la plantilla del carousel dentro del html de nuestro componente
+-En el div que inicia todo el carousel, el div padre, le ponemos una referencia clave para poder trabajar con ella despues(#swiperDiv)
+-Dentro del ts, establecemos una propiedad requerida, debemos asignarle forzosamente un arreglo de strings(Donde iran nuestras imagenes)
+-Dentro de la referencia a nuestro componente en el product-page, cambiamos el codigo para asignarle las imagenes que acabamos de requerir, lo tomamos de nuestro productresource
+-Inicializamos la instancia del SwiperDiv, a travez del Viewchild para buscar un elemento DOM, lo ponemos obligatorio y despues que sea de tipo ElementRef
+-Implementamos el ciclo de vida del componente de modo AfterViewInit
+-Establecemos el metodo del ngAfterViewInit
+-Establecemos una constante de nombre element con el valor del SwiperDiv atravez del nativeElement
+-Corroboramos que exista un valor en el element
+-Colocamos el codigo proporcionado por la SwiperApi donde se inicializa el swiper.
+-Se le otorga al element como argumento al swiper, en lugar del '.swiper'
+-Tambien se le agregan los modulos despues del loop, se le agrega la navegacion y la paginacion importado desde swiper/modules
+-Ahora dentro del html agregamos un @for para agregar todas las imagenes al carousel, lo tomamos de images() y ahi dentro colocamos el div
+-Dentro del div se coloca la variable colocada en el @for y se le agrega el pipe que hicimos para el placeholder
+-Se le agrega algunos estilos de tailwind para que tenga el object-cover y tenga el tamaño adecuado, tambien el alt="Producto"
+30. Agregamos la pagina por genero
+-Injectamos el servicio de los productos, tambien injectamos el ActivatedRoute
+-Establecemos una señal de nombre gender, y se utiliza solamente params para adquirir los valores, despues con el metodo pipe nos permite usar la funcion map para extraer el valor de gender dentro de la URL
+-Aqui solo copiamos y pegamos lo que habiamos puesto en nuestro homepage, tanto en la parte de ts como del html
+-Modificamos el metodo de la peticion http para ajustarlo a la señal como argumento, y ajustamos los parametros de la peticion
+-Dentro del html no se cambia casi nada, solo ponemos el genero dentro del h1 como un span
