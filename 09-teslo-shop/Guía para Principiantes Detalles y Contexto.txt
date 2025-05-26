@@ -94,3 +94,31 @@
 -Aqui solo copiamos y pegamos lo que habiamos puesto en nuestro homepage, tanto en la parte de ts como del html
 -Modificamos el metodo de la peticion http para ajustarlo a la señal como argumento, y ajustamos los parametros de la peticion
 -Dentro del html no se cambia casi nada, solo ponemos el genero dentro del h1 como un span
+31. Creamos el modulo de shared para colocar la paginacion ahi
+-colocamos el componente pagination dentro de la ruta de shared/components/pagination
+-Modificamos el selector para personalizarlo
+32. Agregamos el selector en el html del homepage(de momento podemos colocarlo al inicio para poder prestarle atencion sin necesidad de tener que hacer scroll)
+33. Buscamos en daisyUI una pagination para agregarla en el html
+-Le cambiamos algunos estilos de tailwind para ponerlo en el centro
+34. Agregamos un par de atributos a nuestro componente de paginacion
+-Agregamos un input donde estara el currentpage y le ponemos de valor por default de 1(dentro del parentesis)
+-Agregamos otro input para establecer cuantas paginas son
+-Establecemos una variable donde guardaremos la cantidad de paginas que hay y lo colocamos como un arreglo a travez de la funcion computed,array.from y usamos el callback para añadirle 1 y asi no empieze de 0 sino en 1
+-Colocamos un @for que tome las paginas de la señal que hicimos para guardar el numero de paginas, getPagesList
+-dentro del for colocamos los botones, ademas de los estilos de tailwind, le colocamos el siguiente codigo "[class.btn-primary]="page === currentPage()"", para poder resaltar la pagina actual
+-En el boton le ponemos de nombre el valor numero que hay en {{page}}, es la misma variable que pusimos en el @for
+-Vamos al homepage(donde pusimos el componente de la paginacion) y le colocamos a la referencia las paginas, las ponemos [pages] y usamos el productResource, recuerden que puede ser nulo y en dado caso de que sea asi, le ponemos un 0
+34. Modificamos nuevamente el componente de paginacion.
+-Importamos el RouterLink al archivo .ts
+-En el archivo html, dentro del boton colocamos entre llaves la funcion de routerLink y le damos de valor un [], esto quiere decir que le estamos diciendo al programa que navege a la misma pagina en la que me encuentro
+-Colocamos el router link porque forzosamente se tiene que poner para poder colocar los queryParams, estos sirven para agregar un valor a la URL, donde colocaremos la pagina a la cual navegar
+-Se le da de valor a la pagina {page:page} = el primer valor es el nombre que se le va a agregar a la url: ?page, y el segundo valor es la cantidad que se le va a colocar, en este caso la variable page del @for donde estara el numero de pagina
+-de modo que la url quedaria como http://localhost:4200/?page=2
+-Se agrega una variable mas para poder manejar el current page, el current page al ser un input signal, este solo recibe datos de un componente padre, es decir, solo lee no se le puede agregar o modificar nada
+-por lo tanto se tiene que crear otra variable en modo de señal y que se inicialize con el valor guardado en el currentpage, para de ese modo poder modificar su valor
+-Entonces creamos una nueva funcion click en nuestro boton y mandamos a llamar la nueva señal que acabamos de crear, despues le agregamos con el .set el valor del page creado en el @for
+-despues cambiamos tambien la variable que habiamos puesto antes que resaltaba el boton que este activo, antes se usaba el inputsignal(currentpage), solo lo actualizamos con la nueva señal que acabamos de agregar
+-Dentro de la variable activePage, se cambia el signal() por un linkedSignal(), la explicacion del porque se hace esto es algo complejo asi que intentare explicartelo de la manera mas facil posible
+-Como esta variable la inicializamos mediante un inputSignal, con signal, solo se sincroniza el valor una vez, cuando se inicializa con el currentPage, si de algun modo este inputsignal vuelve a cambiar desde el componente padre, nuestro signal no es capaz de cambiarlo y sincronizarlo
+-Para ello existe linkedSignal, para evitar desincronizaciones con el componente padre, de este modo si se cambia el valor del CurrentPage de algun modo despues de inicializarlo, linkedSignal es capaz de sincronizarse nuevamente
+

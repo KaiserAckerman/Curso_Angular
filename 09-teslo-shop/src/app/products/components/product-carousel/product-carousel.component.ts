@@ -38,7 +38,6 @@ export class ProductCarouselComponent implements AfterViewInit {
       // Optional parameters
       direction: 'horizontal',
       loop: true,
-
       modules: [Navigation, Pagination],
 
       // If we need pagination
