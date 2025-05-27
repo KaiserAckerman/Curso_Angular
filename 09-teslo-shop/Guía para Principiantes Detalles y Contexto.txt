@@ -145,4 +145,5 @@
 -Tambien cambiamos esto en el html, donde usemos el currentPage()
 -Ahora agregamos la paginacion en el GenderPage, usando el servicio de la misma manera que en el homepage(no explicare esto porque es puro copiar y pegar) Tambien decir que cambiamos la pocision de la paginacion a donde debe ir colocado, en el final de la pagina hasta abajo.
 39. Colocaremos el cache de los productos
--
+-Creamos una variable llamada productsCache, esta sera de tipo map ya que nos permite guardar pares de datos y podremos guardar la llave(combinacion de los tres parametros) junto con su respuesta de la api(ProductResponse) por tanto establecemos que la key puede ser un string y la respuesta tendra que ser de tipo ProductResponse
+
