@@ -121,4 +121,28 @@
 -Dentro de la variable activePage, se cambia el signal() por un linkedSignal(), la explicacion del porque se hace esto es algo complejo asi que intentare explicartelo de la manera mas facil posible
 -Como esta variable la inicializamos mediante un inputSignal, con signal, solo se sincroniza el valor una vez, cuando se inicializa con el currentPage, si de algun modo este inputsignal vuelve a cambiar desde el componente padre, nuestro signal no es capaz de cambiarlo y sincronizarlo
 -Para ello existe linkedSignal, para evitar desincronizaciones con el componente padre, de este modo si se cambia el valor del CurrentPage de algun modo despues de inicializarlo, linkedSignal es capaz de sincronizarse nuevamente
-
+-Dentro del homePage(Donde vamos a usar la paginacion), le asignamos un valor al currentPage
+35. En el archivo ts injectamos el activatedRoute
+36. Creamos una nueva señal de nombre CurrentPage que manejara y validara todo lo relacionado con la pagina actual
+-Lo creamos con un toSignal y adentro vamos a construir todo lo necesario para las validaciones
+-Accedemos al valor de la url mediante this.activatedRoute.queryParamMap, esto creara un observable que reaccionara a los valores de la URL
+-Transformaremos los valores del observable mediante el .pipe y adentro estableceremos las acciones a realizar con los .map de rxjs
+-Con el primer map agarramos el valor del observable(queryParamsMap) y lo transformamos para que no brote solo el valor del parametro page
+-Ponemos un operador ternario para evaluar si regresa un valor o no, en dado caso de que regrese a travez de un +, convertimos ese valor(string) a un numero(es necesario colocar el ! para decirle a ts que si o si habra un valor ahi) y si no regresa un valor colocamos un 1 por default
+-A su vez con otro map(al hacer otro map, este trabaja sobre el resultado del map anterior, no sobre el observable principal)
+-En el segundo map establecemos una funcion que detecta si tiene un numero no valido: "isNaN" y a travez de un ? colocamos que si detecta que es un numero no valido ponga un 1 y si si es un numero valido, solo ponga el valor de page(resultado del primer map)
+-Despues establecemos el valor inicial del toSignal a 1 con un {initialValue : 1}
+37. Añadimos el valor del currentPage en la request de nuestro RxResource donde se hace la peticion http
+-lo ponemos en el request de la siguiente forma ({ page: this.currentPage}) de ese modo ya tenemos el valor de la pagina actual dentro de nuestra peticion
+-Ahora lo podemos usar en la peticion, a travez de la propiedad offset, podemos establecer la paginacion correctamente.
+-Le ponemos de valor al offset, el valor obtenido de la request(request.page) multiplicado por la cantidad de objetos que queremos saltarnos, este valor debe ser el mismo puesto en la propiedad limit
+-Tambien esto hara que siempre haya una pagina de mas valida y para evitar esto solo le restamos uno en la request, quedandonos asi ({page: this.currentPage() - 1}) y ya con eso lo solucionamos
+38. Trasladamos toda nuestra logica puesta en el home-page para la paginacion en un servicio, dentro del componente de pagination(no creamos una nueva carpeta de servicios porque queremos amarrar toda la logica al componente de la paginacion)
+-cremos un archivo llamado pagination.service.ts y con el atajo aservice, estructuramos nuestro servicio, despues cambiamos el nombre del selector a PaginationService, despues eliminamos el constructor y adentro del export class ponemos toda nuestra logica
+-Tomamos la logica de la injeccion del activatedRoute y de la señal currentPage y lo pasamos a nuestro servicio, importamos todas las librerias
+-Injectamos nuestro nuevo servicio al homepage(donde usaremos nuestra paginacion), tambien podemos eliminar todas las librerias que quedaron de la logica anterior que trasladamos para que se vea mas limpio el componente
+-Solo sustituimos el valor de nuestra request en el RxResource, para que tome el valor del currentPage del servicio injectado previamente, de modo que quedaria asi: "this.paginationService.currentPage()"
+-Tambien cambiamos esto en el html, donde usemos el currentPage()
+-Ahora agregamos la paginacion en el GenderPage, usando el servicio de la misma manera que en el homepage(no explicare esto porque es puro copiar y pegar) Tambien decir que cambiamos la pocision de la paginacion a donde debe ir colocado, en el final de la pagina hasta abajo.
+39. Colocaremos el cache de los productos
+-

@@ -16,3 +16,5 @@
   }
 </div>
 
+<shared-pagination [pages]="productsResource.value()?.pages ?? 0" [currentPage]="paginationService.currentPage()"></shared-pagination>
+
