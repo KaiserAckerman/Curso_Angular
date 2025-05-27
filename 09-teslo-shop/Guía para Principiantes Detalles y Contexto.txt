@@ -146,4 +146,16 @@
 -Ahora agregamos la paginacion en el GenderPage, usando el servicio de la misma manera que en el homepage(no explicare esto porque es puro copiar y pegar) Tambien decir que cambiamos la pocision de la paginacion a donde debe ir colocado, en el final de la pagina hasta abajo.
 39. Colocaremos el cache de los productos
 -Creamos una variable llamada productsCache, esta sera de tipo map ya que nos permite guardar pares de datos y podremos guardar la llave(combinacion de los tres parametros) junto con su respuesta de la api(ProductResponse) por tanto establecemos que la key puede ser un string y la respuesta tendra que ser de tipo ProductResponse
+-Despues dentro de nuestro metodo despues de establecer los parametros y sus valores por default, nosotros creamos la key, esta estara conformada por los tres parametros de la siguiente manera: `${limit}-${offset}-${gender}`
+-Ahora basicamente lo que queremos hacer es comprobar si nuestro ProductCache contiene una llave identica a la de la peticion que se hace, de ser asi, solo devolvera esta misma y consigo sus valores, si no es asi solo continua haciendo la peticion de manera normal y despues de finalizar la peticion, si esta es valida almacena la key,resp en el ProductCache
+-Para ello comenzemos haciendo un if para comprobar si dentro del productcache hay una key, con el metodo has, quedaria asi this.productCache.has(key) si esto es verdadero solamente regresa el mismo valor pero con un observable con el metodo of, quedaria de la siguiente forma. return of(this.productsCache.get(key)!), importante el signo de admiracion asi le decimos a ts que nunca sera nulo y esto lo sabemos por el primer if
+-Si no hay ninguna llave identica a la de la peticion el flujo sigue a la peticion http, solo cambiamos un poco la respuesta y le agregamos un tap mas de modo que nos guarde la llave y su respuesta a nuestro productCache, quedando de la siguiente manera. tap((resp)=> this.productsCache.set(key, resp))
+40. Colocaremos el cache a los productos
+-Ahora buscamos implementar un cache para guardar cada que hacemos click en un producto, este metodo esta hasta abajo y vamos a modificarlo de manera similar a la de la peticion principal, solo lo ajustaremos un poco
+-Creamos un map similar solo que en ves de que sea products, sera product(productCache), tambien este no recibira como valor el ProductResponse, sino solo un producto(Product)
+-Nos dirigimos hasta el ultimo metodo donde recibimos el producto por el slug(getProductByIdSlug) y esta vez en lugar de key, recibiremos el idSlug para guardar el cache
+-Comenzamos por verificar si existe un idSlug identico guardado en nuestro map (this.productCache.has(idSlug)) y si si existe solo se retorna en forma de observable(return of(this.productCache.get(idSlug)!)) todo esto es casi igual al anterior cache
+-por ultimo a la peticion le agregamos un pipe para poder guardar el idslug junto con su respuesta al map del cache asi que dentro de este pipe colocamos ( tap((product)=> this.productCache.set(idSlug, product)) )
+
+
 
