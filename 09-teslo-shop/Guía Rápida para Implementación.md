@@ -133,84 +133,66 @@ Usar `routerLink` en ambos elementos.
 
 ## Paginación Compartida y Manejo del Estado de Página
 
-### 31. Creación del módulo `shared` para paginación
+### 31. Creamos el módulo `shared` para colocar la paginación
+- Colocamos el componente `pagination` dentro de la ruta `shared/components/pagination`.
+- Modificamos el selector para personalizarlo.
 
-- Se crea el componente `pagination` dentro de `shared/components/pagination`.
-- Se modifica el selector del componente para personalizarlo.
+### 32. Agregamos el selector en el HTML del `homepage`
+- De momento lo colocamos al inicio para poder visualizarlo fácilmente sin hacer scroll.
 
-### 32. Integración del selector en `home-page`
+### 33. Buscamos en DaisyUI una paginación para agregarla en el HTML
+- Le cambiamos algunos estilos con Tailwind para centrarla.
 
-- Se añade el selector del componente de paginación en el HTML del `home-page`, al inicio por conveniencia visual.
+### 34. Agregamos atributos al componente de paginación
+- Creamos un `@Input()` llamado `currentPage` con valor por defecto 1.
+- Otro `@Input()` para establecer el número de páginas.
+- Creamos una variable que guarde la cantidad de páginas como arreglo usando `computed`, `Array.from` y sumando 1 para evitar empezar en 0.
+- Usamos `*ngFor` con `getPagesList()` para generar los botones de página.
+- Dentro del `*ngFor`, colocamos botones con estilos de Tailwind y lógica para resaltar la página actual: `[class.btn-primary]="page === currentPage()"`.
+- El valor del botón será `{{ page }}`.
+- En `homepage`, pasamos las páginas con `[pages]` usando `productResource?.totalPages ?? 0` para manejar valores nulos.
 
-### 33. Maquetación visual con DaisyUI
+### 34 (parte 2). Modificamos el componente de paginación
+- Importamos `RouterLink` en el archivo `.ts`.
+- En el HTML, usamos `routerLink="[]"` dentro del botón para mantenernos en la misma página.
+- Agregamos `queryParams` al `routerLink` con `{ page: page }`, lo que genera URLs como `http://localhost:4200/?page=2`.
+- Creamos una nueva señal que copie el valor de `currentPage` y sea modificable (ya que `inputSignal` es solo de lectura).
+- Creamos una función `click` que actualice el valor de esta nueva señal con `.set(page)`.
+- Actualizamos la lógica de resaltar el botón activo para usar esta nueva señal.
+- Reemplazamos `signal()` por `linkedSignal()` en `activePage` para mantener la sincronización con el componente padre.
+- En `homepage`, asignamos valor al `currentPage`.
 
-- Se utiliza un componente de paginación de DaisyUI.
-- Se ajustan estilos con Tailwind para centrar la paginación.
+### 35. Inyectamos `ActivatedRoute` en el archivo `.ts`
 
-### 34. Lógica básica de paginación
+### 36. Creamos la señal `currentPage` con validaciones
+- Usamos `toSignal()` con `this.activatedRoute.queryParamMap` como observable.
+- Transformamos con `.pipe()` y dos `.map()`:
+  - El primero extrae el parámetro `page`, lo convierte en número (usando `+`) o usa 1 por defecto.
+  - El segundo valida si es un número con `isNaN`; si no lo es, usa 1.
+- Establecemos `{ initialValue: 1 }` en el `toSignal`.
 
-- Se agregan dos `@Input()`:
-  - `currentPage` (valor por defecto: 1).
-  - `pages` (cantidad total de páginas).
-- Se crea una variable computada para obtener la lista de páginas usando `Array.from`.
-- Se renderizan los botones con `@for` sobre `getPagesList`.
-- Cada botón incluye:
-  - Estilo condicional: `[class.btn-primary]="page === currentPage()"`.
-  - Texto con `{{ page }}`.
-- En `home-page`, se pasa `[pages]` al componente, usando `productResource()?.totalPages ?? 0`.
+### 37. Usamos `currentPage` en la petición HTTP de `RxResource`
+- Lo colocamos en la request: `{ page: this.currentPage() - 1 }`.
+- Esto permite establecer correctamente el `offset`: `request.page * limit`.
+- Restamos 1 al `currentPage` para evitar una página de más.
 
-### 35. Mejora de navegación con `RouterLink` y `queryParams`
+### 38. Movemos la lógica de paginación a un servicio
+- Creamos `pagination.service.ts` dentro del componente `pagination`.
+- Reutilizamos lógica de `ActivatedRoute` y `currentPage` dentro del servicio.
+- Inyectamos el servicio en `homepage` y limpiamos imports viejos.
+- En `RxResource`, usamos `this.paginationService.currentPage()`.
+- Actualizamos referencias a `currentPage()` en HTML.
+- Reutilizamos la paginación también en `GenderPage` (copiar/pegar).
+- Finalmente, colocamos la paginación al final de la página.
 
-- Se importa `RouterLink` en el componente.
-- Cada botón se configura con:
-  ```html
-  [routerLink]="[]" 
-  [queryParams]="{ page: page }"
-  ```
-  Esto permite URLs como: `http://localhost:4200/?page=2`.
+### 39. Agregamos caché para productos (peticiones paginadas)
+- Creamos `productsCache: Map<string, ProductResponse>`.
+- La clave es `${limit}-${offset}-${gender}`.
+- Si la key existe en el cache, devolvemos `of(this.productsCache.get(key)!)`.
+- Si no, continuamos la petición y al final usamos `tap((resp) => this.productsCache.set(key, resp))`.
 
-### 36. Manejo de estado de página activo
-
-- Se crea una nueva señal (`activePage`) basada en `currentPage`, para poder modificar su valor.
-- En el `click` del botón, se usa `activePage.set(page)` para cambiar la página activa.
-- Se actualiza el botón activo con `activePage() === page`.
-- Se reemplaza `signal()` por `linkedSignal()` para mantener sincronización con el padre.
-
-### 37. Lectura de parámetros de URL con `ActivatedRoute`
-
-- Se inyecta `ActivatedRoute` en el componente.
-- Se crea una señal `currentPage` con `toSignal`, leyendo `queryParamMap`:
-  ```ts
-  this.activatedRoute.queryParamMap.pipe(
-    map(params => +params.get('page')! || 1),
-    map(page => isNaN(page) ? 1 : page)
-  )
-  ```
-- Se establece un valor inicial con `{ initialValue: 1 }`.
-
-### 38. Paginación dinámica en el request del `RxResource`
-
-- Se pasa `currentPage` en el request:
-  ```ts
-  { page: this.currentPage() - 1 }
-  ```
-- Se calcula `offset` usando:  
-  `offset = request.page * limit`.
-
-### 39. Refactor: trasladar lógica a un servicio
-
-- Se crea `pagination.service.ts` en el componente `pagination`.
-- Se extrae:
-  - `ActivatedRoute`
-  - señal `currentPage`
-- Se inyecta el servicio en `home-page`.
-- Se actualizan las referencias:
-  - En TS: `this.paginationService.currentPage()`
-  - En HTML: `paginationService.currentPage()`
-- Se reutiliza el servicio en `gender-page` y se posiciona la paginación al final del contenido.
-
-### 40. Implementación de cache de productos
-
-- Se crea `productsCache` usando un `Map<string, ProductResponse>`.
-- La clave es una combinación de parámetros relevantes (ej: filtros + página).
-- Se almacena la respuesta de la API para cada combinación.
+### 40. Agregamos caché para productos individuales (por `slug`)
+- Creamos `productCache: Map<string, Product>`.
+- En `getProductByIdSlug(slug)`, verificamos si existe `slug` en el `Map`.
+- Si existe, devolvemos `of(this.productCache.get(slug)!)`.
+- Si no, en la respuesta de la petición, usamos `tap((product) => this.productCache.set(slug, product))`.
