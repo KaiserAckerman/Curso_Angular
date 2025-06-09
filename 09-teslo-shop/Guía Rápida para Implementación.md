@@ -130,3 +130,87 @@ Usar `routerLink` en ambos elementos.
 - Reutilizar lógica del HomePage
 - Filtrar productos por género
 - Mostrar género en `h1`
+
+## Paginación Compartida y Manejo del Estado de Página
+
+### 31. Creación del módulo `shared` para paginación
+
+- Se crea el componente `pagination` dentro de `shared/components/pagination`.
+- Se modifica el selector del componente para personalizarlo.
+
+### 32. Integración del selector en `home-page`
+
+- Se añade el selector del componente de paginación en el HTML del `home-page`, al inicio por conveniencia visual.
+
+### 33. Maquetación visual con DaisyUI
+
+- Se utiliza un componente de paginación de DaisyUI.
+- Se ajustan estilos con Tailwind para centrar la paginación.
+
+### 34. Lógica básica de paginación
+
+- Se agregan dos `@Input()`:
+  - `currentPage` (valor por defecto: 1).
+  - `pages` (cantidad total de páginas).
+- Se crea una variable computada para obtener la lista de páginas usando `Array.from`.
+- Se renderizan los botones con `@for` sobre `getPagesList`.
+- Cada botón incluye:
+  - Estilo condicional: `[class.btn-primary]="page === currentPage()"`.
+  - Texto con `{{ page }}`.
+- En `home-page`, se pasa `[pages]` al componente, usando `productResource()?.totalPages ?? 0`.
+
+### 35. Mejora de navegación con `RouterLink` y `queryParams`
+
+- Se importa `RouterLink` en el componente.
+- Cada botón se configura con:
+  ```html
+  [routerLink]="[]" 
+  [queryParams]="{ page: page }"
+  ```
+  Esto permite URLs como: `http://localhost:4200/?page=2`.
+
+### 36. Manejo de estado de página activo
+
+- Se crea una nueva señal (`activePage`) basada en `currentPage`, para poder modificar su valor.
+- En el `click` del botón, se usa `activePage.set(page)` para cambiar la página activa.
+- Se actualiza el botón activo con `activePage() === page`.
+- Se reemplaza `signal()` por `linkedSignal()` para mantener sincronización con el padre.
+
+### 37. Lectura de parámetros de URL con `ActivatedRoute`
+
+- Se inyecta `ActivatedRoute` en el componente.
+- Se crea una señal `currentPage` con `toSignal`, leyendo `queryParamMap`:
+  ```ts
+  this.activatedRoute.queryParamMap.pipe(
+    map(params => +params.get('page')! || 1),
+    map(page => isNaN(page) ? 1 : page)
+  )
+  ```
+- Se establece un valor inicial con `{ initialValue: 1 }`.
+
+### 38. Paginación dinámica en el request del `RxResource`
+
+- Se pasa `currentPage` en el request:
+  ```ts
+  { page: this.currentPage() - 1 }
+  ```
+- Se calcula `offset` usando:  
+  `offset = request.page * limit`.
+
+### 39. Refactor: trasladar lógica a un servicio
+
+- Se crea `pagination.service.ts` en el componente `pagination`.
+- Se extrae:
+  - `ActivatedRoute`
+  - señal `currentPage`
+- Se inyecta el servicio en `home-page`.
+- Se actualizan las referencias:
+  - En TS: `this.paginationService.currentPage()`
+  - En HTML: `paginationService.currentPage()`
+- Se reutiliza el servicio en `gender-page` y se posiciona la paginación al final del contenido.
+
+### 40. Implementación de cache de productos
+
+- Se crea `productsCache` usando un `Map<string, ProductResponse>`.
+- La clave es una combinación de parámetros relevantes (ej: filtros + página).
+- Se almacena la respuesta de la API para cada combinación.
